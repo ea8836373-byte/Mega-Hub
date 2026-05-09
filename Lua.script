@@ -1,0 +1,135 @@
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Pulizia interfacce vecchie
+if game.CoreGui:FindFirstChild("MiniFarm") then game.CoreGui.MiniFarm:Destroy() end
+if game.CoreGui:FindFirstChild("MiniTele") then game.CoreGui.MiniTele:Destroy() end
+
+-- Funzione Dragging Universale
+local function drag(frame)
+    local dragging, dragStart, startPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true; dragStart = input.Position; startPos = frame.Position
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+    end)
+end
+
+-- 🛠 1. MINI TAB AUTOFARM
+local FarmGui = Instance.new("ScreenGui", game.CoreGui)
+FarmGui.Name = "MiniFarm"
+
+local FMain = Instance.new("Frame", FarmGui)
+FMain.Size = UDim2.new(0, 180, 0, 70)
+FMain.Position = UDim2.new(0.05, 0, 0.1, 0)
+FMain.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+drag(FMain)
+Instance.new("UICorner", FMain)
+
+local FTitle = Instance.new("TextLabel", FMain)
+FTitle.Text = "Ghost Farm 2021"
+FTitle.Size = UDim2.new(1, 0, 0, 30)
+FTitle.TextColor3 = Color3.new(1, 1, 1)
+FTitle.BackgroundTransparency = 1
+FTitle.Font = Enum.Font.GothamBold
+
+local Tik = Instance.new("TextButton", FMain)
+Tik.Size = UDim2.new(0, 25, 0, 25)
+Tik.Position = UDim2.new(0.43, 0, 0.5, 0)
+Tik.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Tik.Text = ""
+Tik.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", Tik)
+
+local isFarming = false
+Tik.MouseButton1Click:Connect(function()
+    isFarming = not isFarming
+    Tik.Text = isFarming and "X" or ""
+    Tik.BackgroundColor3 = isFarming and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 40, 40)
+end)
+
+-- 🚀 2. MINI TAB TELEPORT
+local TeleGui = Instance.new("ScreenGui", game.CoreGui)
+TeleGui.Name = "MiniTele"
+
+local TMain = Instance.new("Frame", TeleGui)
+TMain.Size = UDim2.new(0, 180, 0, 210)
+TMain.Position = UDim2.new(0.05, 0, 0.25, 0)
+TMain.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+drag(TMain)
+Instance.new("UICorner", TMain)
+
+local Scroll = Instance.new("ScrollingFrame", TMain)
+Scroll.Size = UDim2.new(1, -10, 0, 130)
+Scroll.Position = UDim2.new(0, 5, 0, 10)
+Scroll.BackgroundTransparency = 1
+Scroll.CanvasSize = UDim2.new(0, 0, 1.8, 0)
+Scroll.ScrollBarThickness = 2
+
+local TL = Instance.new("TextButton", TMain)
+TL.Text = "TL"
+TL.Size = UDim2.new(0.8, 0, 0, 35)
+TL.Position = UDim2.new(0.1, 0, 0.78, 0)
+TL.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+TL.TextColor3 = Color3.new(1, 1, 1)
+TL.Font = Enum.Font.GothamBold
+Instance.new("UICorner", TL)
+
+local targetPos = nil
+local points = {
+    {"Shop", Vector3.new(97.79, 1339.98, -75.49)},
+    {"Halloween 2021", Vector3.new(668.42, 1384.78, -262.89)},
+    {"Dark Shop", Vector3.new(-133.18, 1335.56, -8.83)},
+    {"Rebirth Shop", Vector3.new(-218.10, 1335.73, -6.62)},
+    {"Salon", Vector3.new(-184.90, 1339.98, 62.84)}
+}
+
+for i, p in ipairs(points) do
+    local b = Instance.new("TextButton", Scroll)
+    b.Text = p[1]
+    b.Size = UDim2.new(1, 0, 0, 28)
+    b.Position = UDim2.new(0, 0, 0, (i-1)*32)
+    b.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    b.TextColor3 = Color3.new(1, 1, 1)
+    b.MouseButton1Click:Connect(function()
+        targetPos = p[2]
+        TL.Text = "TL TO " .. p[1]
+    end)
+end
+
+TL.MouseButton1Click:Connect(function()
+    if targetPos and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos)
+    end
+end)
+
+-- 🔄 LOOP AUTOFARM RALLENTATO
+task.spawn(function()
+    while true do
+        if isFarming then
+            pcall(function()
+                -- Cerchiamo l'oggetto senza bloccare lo script
+                local enemy = workspace.Areas["Spooky Path"].EnemyHolder:FindFirstChild("GhostBaconJr")
+                if enemy then
+                    local args = { enemy }
+                    ReplicatedStorage.Remotes.Punch:FireServer(unpack(args))
+                end
+            end)
+        end
+        task.wait(0.3) -- Velocità ridotta per stabilità
+    end
+end)
+
+
+
