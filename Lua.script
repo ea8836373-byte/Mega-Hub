@@ -6,7 +6,7 @@ local VirtualUser = game:GetService("VirtualUser")
 
 -- PULIZIA GUI PRECEDENTI
 for _, gui in pairs(game.CoreGui:GetChildren()) do
-    if gui.Name == "FarmGhost" or gui.Name == "MiniTele" or gui.Name == "AutoRebirthGUI" or gui.Name == "AutoUpgradeGUI" or gui.Name == "FarmBig" then
+    if gui.Name == "BestHubKey" or gui.Name == "FarmGhost" or gui.Name == "MiniTele" or gui.Name == "AutoRebirthGUI" or gui.Name == "AutoUpgradeGUI" then
         gui:Destroy()
     end
 end
@@ -29,72 +29,90 @@ local function drag(frame)
     end)
 end
 
--- 👻 TAB 1: GHOST FARM
-local GhostGui = Instance.new("ScreenGui", game.CoreGui); GhostGui.Name = "FarmGhost"
-local GMain = Instance.new("Frame", GhostGui); GMain.Size = UDim2.new(0, 160, 0, 75); GMain.Position = UDim2.new(0.05, 0, 0.1, 0); GMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(GMain); Instance.new("UICorner", GMain)
-local GTik = Instance.new("TextButton", GMain); GTik.Size = UDim2.new(0, 140, 0, 40); GTik.Position = UDim2.new(0.06, 0, 0.25, 0); GTik.Text = "GHOST: OFF"; GTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); GTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", GTik)
-local ghostActive = false
-GTik.MouseButton1Click:Connect(function() ghostActive = not ghostActive; GTik.Text = ghostActive and "GHOST: ON" or "GHOST: OFF"; GTik.BackgroundColor3 = ghostActive and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(50, 50, 50) end)
+-- 🔑 SISTEMA KEY (BEST HUB)
+local KeyGui = Instance.new("ScreenGui", game.CoreGui); KeyGui.Name = "BestHubKey"
+local KMain = Instance.new("Frame", KeyGui)
+KMain.Size = UDim2.new(0, 250, 0, 150); KMain.Position = UDim2.new(0.5, -125, 0.5, -75)
+KMain.BackgroundColor3 = Color3.fromRGB(25, 25, 25); drag(KMain); Instance.new("UICorner", KMain)
 
--- 🔄 TAB 2: AUTO REBIRTH
-local RebirthGui = Instance.new("ScreenGui", game.CoreGui); RebirthGui.Name = "AutoRebirthGUI"
-local RMain = Instance.new("Frame", RebirthGui); RMain.Size = UDim2.new(0, 160, 0, 75); RMain.Position = UDim2.new(0.2, 0, 0.1, 0); RMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(RMain); Instance.new("UICorner", RMain)
-local RTik = Instance.new("TextButton", RMain); RTik.Size = UDim2.new(0, 140, 0, 40); RTik.Position = UDim2.new(0.06, 0, 0.25, 0); RTik.Text = "REBIRTH: OFF"; RTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); RTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", RTik)
-local rebirthActive = false
-RTik.MouseButton1Click:Connect(function() rebirthActive = not rebirthActive; RTik.Text = rebirthActive and "REBIRTH: ON" or "REBIRTH: OFF"; RTik.BackgroundColor3 = rebirthActive and Color3.fromRGB(200, 50, 200) or Color3.fromRGB(50, 50, 50) end)
+local KTitle = Instance.new("TextLabel", KMain); KTitle.Text = "BEST HUB"; KTitle.Size = UDim2.new(1, 0, 0, 40); KTitle.TextColor3 = Color3.new(1,1,1); KTitle.Font = Enum.Font.GothamBold; KTitle.BackgroundTransparency = 1
+local KSub = Instance.new("TextLabel", KMain); KSub.Text = "Inserisci la Key"; KSub.Position = UDim2.new(0,0,0,35); KSub.Size = UDim2.new(1, 0, 0, 20); KSub.TextColor3 = Color3.fromRGB(200,200,200); KSub.Font = Enum.Font.Gotham; KSub.BackgroundTransparency = 1
 
--- ⚡ TAB 3: AUTO UPGRADE
-local UpgradeGui = Instance.new("ScreenGui", game.CoreGui); UpgradeGui.Name = "AutoUpgradeGUI"
-local UMain = Instance.new("Frame", UpgradeGui); UMain.Size = UDim2.new(0, 160, 0, 75); UMain.Position = UDim2.new(0.35, 0, 0.1, 0); UMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(UMain); Instance.new("UICorner", UMain)
-local UTik = Instance.new("TextButton", UMain); UTik.Size = UDim2.new(0, 140, 0, 40); UTik.Position = UDim2.new(0.06, 0, 0.25, 0); UTik.Text = "UPGRADE: OFF"; UTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); UTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", UTik)
-local upgradeActive = false
-UTik.MouseButton1Click:Connect(function() upgradeActive = not upgradeActive; UTik.Text = upgradeActive and "UPGRADE: ON" or "UPGRADE: OFF"; UTik.BackgroundColor3 = upgradeActive and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 50, 50) end)
+local KInput = Instance.new("TextBox", KMain)
+KInput.Size = UDim2.new(0, 200, 0, 30); KInput.Position = UDim2.new(0.1, 0, 0.5, 0); KInput.PlaceholderText = "Key qui..."; KInput.Text = ""; KInput.BackgroundColor3 = Color3.fromRGB(40,40,40); KInput.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", KInput)
 
--- 🚀 TAB 4: TELEPORT (NOMI E COORDINATE ORIGINALI RIPRISTINATI)
-local TeleGui = Instance.new("ScreenGui", game.CoreGui); TeleGui.Name = "MiniTele"
-local TMain = Instance.new("Frame", TeleGui); TMain.Size = UDim2.new(0, 180, 0, 220); TMain.Position = UDim2.new(0.05, 0, 0.25, 0); TMain.BackgroundColor3 = Color3.fromRGB(20, 20, 20); drag(TMain); Instance.new("UICorner", TMain)
-local Scroll = Instance.new("ScrollingFrame", TMain); Scroll.Size = UDim2.new(1, -10, 0, 140); Scroll.Position = UDim2.new(0, 5, 0, 5); Scroll.BackgroundTransparency = 1; Scroll.CanvasSize = UDim2.new(0, 0, 2, 0)
-local TL = Instance.new("TextButton", TMain); TL.Text = "TL"; TL.Size = UDim2.new(0.8, 0, 0, 35); TL.Position = UDim2.new(0.1, 0, 0.75, 0); TL.BackgroundColor3 = Color3.fromRGB(0, 120, 255); TL.TextColor3 = Color3.new(1, 1, 1); TL.Font = Enum.Font.GothamBold; Instance.new("UICorner", TL)
+local KBtn = Instance.new("TextButton", KMain)
+KBtn.Size = UDim2.new(0, 100, 0, 30); KBtn.Position = UDim2.new(0.3, 0, 0.75, 0); KBtn.Text = "CHECK"; KBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255); KBtn.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", KBtn)
 
-local targetPos = nil
-local points = {
-    {"Shop", Vector3.new(97.79, 1339.98, -75.49)},
-    {"Halloween 2021", Vector3.new(668.42, 1384.78, -262.89)},
-    {"Dark Shop", Vector3.new(-133.18, 1335.56, -8.83)},
-    {"Rebirth Shop", Vector3.new(-218.10, 1335.73, -6.62)},
-    {"Salon", Vector3.new(-184.90, 1339.98, 62.84)}
-}
+-- FUNZIONE PER ATTIVARE IL HUB
+local function StartHub()
+    KeyGui:Destroy()
+    
+    -- 👻 TAB 1: GHOST
+    local GhostGui = Instance.new("ScreenGui", game.CoreGui); GhostGui.Name = "FarmGhost"
+    local GMain = Instance.new("Frame", GhostGui); GMain.Size = UDim2.new(0, 160, 0, 75); GMain.Position = UDim2.new(0.05, 0, 0.1, 0); GMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(GMain); Instance.new("UICorner", GMain)
+    local GTik = Instance.new("TextButton", GMain); GTik.Size = UDim2.new(0, 140, 0, 40); GTik.Position = UDim2.new(0.06, 0, 0.25, 0); GTik.Text = "GHOST: OFF"; GTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); GTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", GTik)
+    local ghostActive = false
+    GTik.MouseButton1Click:Connect(function() ghostActive = not ghostActive; GTik.Text = ghostActive and "GHOST: ON" or "GHOST: OFF"; GTik.BackgroundColor3 = ghostActive and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(50, 50, 50) end)
 
-for i, p in ipairs(points) do
-    local b = Instance.new("TextButton", Scroll); b.Text = p[1]; b.Size = UDim2.new(1, 0, 0, 30); b.Position = UDim2.new(0, 0, 0, (i-1)*33); b.BackgroundColor3 = Color3.fromRGB(35, 35, 35); b.TextColor3 = Color3.new(1, 1, 1)
-    b.MouseButton1Click:Connect(function() targetPos = p[2]; TL.Text = "TL TO " .. p[1] end)
-end
-TL.MouseButton1Click:Connect(function() if targetPos and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos) end end)
+    -- 🔄 TAB 2: REBIRTH
+    local RebirthGui = Instance.new("ScreenGui", game.CoreGui); RebirthGui.Name = "AutoRebirthGUI"
+    local RMain = Instance.new("Frame", RebirthGui); RMain.Size = UDim2.new(0, 160, 0, 75); RMain.Position = UDim2.new(0.2, 0, 0.1, 0); RMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(RMain); Instance.new("UICorner", RMain)
+    local RTik = Instance.new("TextButton", RMain); RTik.Size = UDim2.new(0, 140, 0, 40); RTik.Position = UDim2.new(0.06, 0, 0.25, 0); RTik.Text = "REBIRTH: OFF"; RTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); RTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", RTik)
+    local rebirthActive = false
+    RTik.MouseButton1Click:Connect(function() rebirthActive = not rebirthActive; RTik.Text = rebirthActive and "REBIRTH: ON" or "REBIRTH: OFF"; RTik.BackgroundColor3 = rebirthActive and Color3.fromRGB(200, 50, 200) or Color3.fromRGB(50, 50, 50) end)
 
--- LOOPS
-task.spawn(function()
-    while true do
-        pcall(function()
-            if ghostActive then
-                local enemies = workspace.Areas["Spooky Path"].EnemyHolder:GetChildren()
-                for i = 1, 3 do if enemies[i] and enemies[i].Name:find("Ghost") then ReplicatedStorage.Remotes.Punch:FireServer(enemies[i]) end end
-            end
-            
-            if rebirthActive then
-                ReplicatedStorage.Remotes.Rebirth:FireServer()
-                ReplicatedStorage.Remotes.Punch:FireServer(unpack({Instance.new("Model", nil)}))
-            end
+    -- ⚡ TAB 3: UPGRADE
+    local UpgradeGui = Instance.new("ScreenGui", game.CoreGui); UpgradeGui.Name = "AutoUpgradeGUI"
+    local UMain = Instance.new("Frame", UpgradeGui); UMain.Size = UDim2.new(0, 160, 0, 75); UMain.Position = UDim2.new(0.35, 0, 0.1, 0); UMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30); drag(UMain); Instance.new("UICorner", UMain)
+    local UTik = Instance.new("TextButton", UMain); UTik.Size = UDim2.new(0, 140, 0, 40); UTik.Position = UDim2.new(0.06, 0, 0.25, 0); UTik.Text = "UPGRADE: OFF"; UTik.BackgroundColor3 = Color3.fromRGB(50, 50, 50); UTik.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", UTik)
+    local upgradeActive = false
+    UTik.MouseButton1Click:Connect(function() upgradeActive = not upgradeActive; UTik.Text = upgradeActive and "UPGRADE: ON" or "UPGRADE: OFF"; UTik.BackgroundColor3 = upgradeActive and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(50, 50, 50) end)
 
-            if upgradeActive then
-                if LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7730.49, 3273.26, -191270.30)
+    -- 🚀 TAB 4: TELEPORT
+    local TeleGui = Instance.new("ScreenGui", game.CoreGui); TeleGui.Name = "MiniTele"
+    local TMain = Instance.new("Frame", TeleGui); TMain.Size = UDim2.new(0, 180, 0, 220); TMain.Position = UDim2.new(0.05, 0, 0.25, 0); TMain.BackgroundColor3 = Color3.fromRGB(20, 20, 20); drag(TMain); Instance.new("UICorner", TMain)
+    local Scroll = Instance.new("ScrollingFrame", TMain); Scroll.Size = UDim2.new(1, -10, 0, 140); Scroll.Position = UDim2.new(0, 5, 0, 5); Scroll.BackgroundTransparency = 1; Scroll.CanvasSize = UDim2.new(0, 0, 2, 0)
+    local TL = Instance.new("TextButton", TMain); TL.Text = "TL"; TL.Size = UDim2.new(0.8, 0, 0, 35); TL.Position = UDim2.new(0.1, 0, 0.75, 0); TL.BackgroundColor3 = Color3.fromRGB(0, 120, 255); TL.TextColor3 = Color3.new(1, 1, 1); Instance.new("UICorner", TL)
+
+    local targetPos = nil
+    local points = {{"Shop", Vector3.new(97.79, 1339.98, -75.49)}, {"Halloween 2021", Vector3.new(668.42, 1384.78, -262.89)}, {"Dark Shop", Vector3.new(-133.18, 1335.56, -8.83)}, {"Rebirth Shop", Vector3.new(-218.10, 1335.73, -6.62)}, {"Salon", Vector3.new(-184.90, 1339.98, 62.84)}}
+    for i, p in ipairs(points) do
+        local b = Instance.new("TextButton", Scroll); b.Text = p[1]; b.Size = UDim2.new(1, 0, 0, 30); b.Position = UDim2.new(0, 0, 0, (i-1)*33); b.BackgroundColor3 = Color3.fromRGB(35, 35, 35); b.TextColor3 = Color3.new(1, 1, 1)
+        b.MouseButton1Click:Connect(function() targetPos = p[2]; TL.Text = "TL TO " .. p[1] end)
+    end
+    TL.MouseButton1Click:Connect(function() if targetPos and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos) end end)
+
+    -- LOOP LOGIC
+    task.spawn(function()
+        while true do
+            pcall(function()
+                if ghostActive then
+                    local enemies = workspace.Areas["Spooky Path"].EnemyHolder:GetChildren()
+                    for i = 1, 3 do if enemies[i] and enemies[i].Name:find("Ghost") then ReplicatedStorage.Remotes.Punch:FireServer(enemies[i]) end end
                 end
-                VirtualUser:CaptureController()
-                VirtualUser:ClickButton1(Vector2.new(0,0))
-                ReplicatedStorage.Remotes.Upgrade:FireServer()
-                ReplicatedStorage.Remotes.Purchase:FireServer()
-            end
-        end)
-        task.wait(0.3)
+                if rebirthActive then
+                    ReplicatedStorage.Remotes.Rebirth:FireServer()
+                    ReplicatedStorage.Remotes.Punch:FireServer(unpack({Instance.new("Model", nil)}))
+                end
+                if upgradeActive then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7730.49, 3273.26, -191270.30)
+                    VirtualUser:CaptureController(); VirtualUser:ClickButton1(Vector2.new(0,0))
+                    ReplicatedStorage.Remotes.Upgrade:FireServer(); ReplicatedStorage.Remotes.Purchase:FireServer()
+                end
+            end)
+            task.wait(0.3)
+        end
+    end)
+end
+
+-- LOGICA BOTTONE KEY
+KBtn.MouseButton1Click:Connect(function()
+    if KInput.Text == "4" then
+        StartHub()
+    else
+        KBtn.Text = "WRONG KEY!"; KBtn.BackgroundColor3 = Color3.new(1,0,0)
+        task.wait(1)
+        KBtn.Text = "CHECK"; KBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
     end
 end)
